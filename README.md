@@ -34,6 +34,7 @@ For a fresh clone, install the locked dependency graph through Node's Corepack s
 
 ```bash
 corepack pnpm install
+npx playwright install chromium
 npm run dev
 ```
 
@@ -45,6 +46,7 @@ Using `corepack pnpm` means contributors do not need a globally installed `pnpm`
 npm run lint
 npm test
 npm run build
+npm run test:e2e
 ```
 
 Use `npm run test:watch` while developing.
@@ -125,6 +127,9 @@ src/
 ├── validation/    # Zod form schemas
 ├── App.test.tsx   # Critical-flow integration tests
 └── App.tsx        # Route composition
+e2e/               # Playwright critical-path and Axe accessibility test
+.github/workflows/ # Continuous integration quality gate
+DEMO.md             # Five-minute demonstration and interview rehearsal guide
 ```
 
 ## Testing approach
@@ -140,6 +145,10 @@ The test suite uses Vitest, React Testing Library, and `user-event`. It tests be
 
 These integration-style cases give more confidence than isolated snapshots because they cross form validation, context state, service behavior, navigation, and permission rendering. With a real backend, I would add API contract tests and end-to-end tests covering cookie/session behavior.
 
+One Playwright test covers the critical browser path from a protected-route redirect through login, MFA, authorization, accessible dialog keyboard behavior, and a successful edit. It also runs an Axe WCAG scan against the authenticated dashboard. This intentionally complements rather than duplicates the faster component tests.
+
+GitHub Actions runs linting, component tests, the production build, and the Playwright test for every pull request and push to `main`.
+
 ## Accessibility and UX details
 
 - Every input has a programmatically associated label.
@@ -151,6 +160,8 @@ These integration-style cases give more confidence than isolated snapshots becau
 - Motion is minimized when `prefers-reduced-motion` is enabled.
 - The dashboard table scrolls within its container on narrow screens.
 - Password visibility controls have accessible names and pressed state.
+- The edit dialog traps keyboard focus, closes with Escape, and returns focus to its triggering control.
+- A browser-level Axe scan guards against automated WCAG violations, including color contrast regressions.
 
 ## Assumptions
 
@@ -170,11 +181,11 @@ This application intentionally simulates authentication. In a production system 
 - Add OTP expiry, attempt limits, replay protection, resend throttling, and recovery flows.
 - Enforce permissions on every server operation, irrespective of the visible UI.
 - Add server-backed audit events for login, MFA, logout, and resource changes.
-- Use a focus-trapped dialog primitive and restore focus when the editor closes.
-- Add broader end-to-end, accessibility, and cross-browser coverage.
+- Add broader end-to-end coverage for registration, session expiry, and failure recovery.
+- Expand automated browser coverage beyond Chromium when product support requirements justify the additional CI time.
 
 ## AI usage
 
-AI assistance was used during implementation for scaffolding, code generation, design iteration, and review. The submitted architecture and trade-offs were reviewed deliberately, and the application was verified with linting, automated tests, a production build, and manual responsive browser testing.
+AI assistance was used during implementation for scaffolding, code generation, design iteration, and review. The submitted architecture and trade-offs were reviewed deliberately, and the application was verified with linting, component tests, a production build, a Playwright critical-path test, an Axe accessibility scan, and manual responsive browser testing.
 
 AI-generated code should be treated like any other contribution: it still requires understanding, review, and ownership. The sections above document the reasoning behind the major choices so those decisions can be evaluated independently of how the first draft was produced.

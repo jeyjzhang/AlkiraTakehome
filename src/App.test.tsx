@@ -50,7 +50,16 @@ describe('authentication experience', () => {
     await user.click(screen.getByRole('button', { name: /verify and continue/i }));
 
     expect(await screen.findByText('Read / write')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /edit production core/i })).toBeEnabled();
+    const editButton = screen.getByRole('button', { name: /edit production core/i });
+    expect(editButton).toBeEnabled();
+
+    await user.click(editButton);
+    expect(screen.getByRole('dialog', { name: /edit network/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/network name/i)).toHaveFocus();
+
+    await user.keyboard('{Escape}');
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(editButton).toHaveFocus();
   });
 
   it('disables edit actions for a read-only user', async () => {

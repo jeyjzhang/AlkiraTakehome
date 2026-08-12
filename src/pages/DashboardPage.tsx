@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 import { hasPermission } from '../auth/permissions';
 import { BrandMark } from '../components/BrandMark';
+import { Modal } from '../components/Modal';
 import {
   ActivityIcon,
   CheckIcon,
@@ -179,18 +180,16 @@ export function DashboardPage() {
       </main>
 
       {editing && (
-        <div className="modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && setEditing(null)}>
-          <section className="modal" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+        <Modal labelledBy="edit-title" describedBy="edit-description" onClose={() => setEditing(null)}>
             <header><div><p className="eyebrow eyebrow--blue">Resource settings</p><h2 id="edit-title">Edit network</h2></div><button className="icon-button" type="button" onClick={() => setEditing(null)} aria-label="Close"><CloseIcon /></button></header>
             <div className="modal__body">
               <label htmlFor="resource-name">Network name</label>
-              <input id="resource-name" value={resourceName} onChange={(event) => setResourceName(event.target.value)} autoFocus />
+              <input id="resource-name" value={resourceName} onChange={(event) => setResourceName(event.target.value)} data-autofocus />
               <div className="readonly-grid"><div><span>Provider</span><strong>{editing.provider}</strong></div><div><span>Network</span><strong>{editing.cidr}</strong></div></div>
-              <p className="modal__note"><InfoIcon /> This demo permits renaming only. Provider and CIDR are immutable.</p>
+              <p className="modal__note" id="edit-description"><InfoIcon /> This demo permits renaming only. Provider and CIDR are immutable.</p>
             </div>
             <footer><button className="button button--secondary" type="button" onClick={() => setEditing(null)}>Cancel</button><button className="button button--primary" type="button" onClick={saveResource} disabled={!resourceName.trim()}>Save changes</button></footer>
-          </section>
-        </div>
+        </Modal>
       )}
 
       {toast && <div className="toast" role="status"><CheckIcon /> {toast}</div>}
