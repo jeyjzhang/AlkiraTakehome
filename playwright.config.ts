@@ -9,6 +9,7 @@ export default defineConfig({
   use: {
     baseURL: 'http://127.0.0.1:5173',
     trace: 'on-first-retry',
+    contextOptions: { reducedMotion: 'reduce' },
   },
   projects: [
     {

@@ -49,6 +49,9 @@ test('completes MFA, enforces accessible dialog behavior, and edits a resource',
     page.getByText('Network resource updated successfully.'),
   ).toBeVisible();
 
+  await page.getByText('Network resource updated successfully.').waitFor({ state: 'visible' });
+  await page.waitForTimeout(250);
+
   const accessibilityScan = await new AxeBuilder({ page }).analyze();
   expect(accessibilityScan.violations).toEqual([]);
 });
