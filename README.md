@@ -52,21 +52,48 @@ npm run test:e2e
 
 The component tests cover validation, failed credentials, route protection, MFA, role permissions, session restoration, logout, and sign-up validation. The Playwright test covers the main browser flow, keyboard behavior in the edit dialog, editing a resource, and an Axe accessibility scan.
 
-## Implementation decisions
+## Design decisions and trade-offs
 
-I represented authentication with three states:
+**Three explicit auth states instead of a boolean.** The flow is `anonymous -> mfa-required ->
+authenticated`. A correct password doesn't create a session, it creates a `pendingUser`. Only a
+correct MFA code promotes that into `authenticated` and actually writes to storage. I did it this
+way so a bug in the password step can't accidentally skip MFA. The two factors are separate
+states, not just two steps that happen to run in order.
 
-```text
-anonymous -> mfa-required -> authenticated
-```
+**React Context instead of Redux.** Auth state here is small, just a status and one user object,
+and it doesn't change often. Redux would mean setting up actions, reducers, and a store to manage
+something this simple. I'd switch to Redux if the state grew to include caching, multiple features
+reading and writing to it, or frequent updates from different places. None of that applies here.
 
-A correct password creates a pending user, but it does not create an authenticated session. The session is stored only after the MFA code is accepted. I kept this logic in React Context because the shared state is small and does not need a larger state-management library.
+**Route guards instead of checks inside each page.** `/dashboard` requires a completed MFA flow
+and `/verify` requires a successful password step, both enforced by small wrapper components
+(`ProtectedRoute`, `MfaRoute`) rather than an `if` at the top of every page. It's easier to audit
+three guards than to trust that every page remembered to check.
 
-Route guards keep access rules outside the page components. `/dashboard` requires a completed MFA flow, while `/verify` requires a successful password step.
+**Named permissions instead of checking roles directly.** The dashboard calls
+`hasPermission(user.role, 'resource:edit')` instead of writing `role === 'read-write'` everywhere
+it needs to know if editing is allowed. For two roles that's slightly more code than it needs to
+be, but it means if a third role or a new capability shows up later, I change it in one place
+instead of hunting down every button and handler. I also check the permission inside the event
+handler, not just on the disabled attribute, so a future CSS or markup change can't accidentally
+make an action clickable for a role that shouldn't have it.
 
-The dashboard checks a named permission (`resource:edit`) instead of checking role names throughout the component. I chose to disable edit buttons for the read-only account so the difference between the two roles is easy to see. The edit handler checks the permission as well.
+**Disabled buttons instead of hiding them for read-only users.** I want the difference between the
+two roles to actually be visible so it's easy to evaluate. If this were a case where even knowing
+an action exists is sensitive, like a delete-organization button, I'd hide it instead. Here it
+makes more sense to show it and explain why it's off.
 
-I used Zod schemas with React Hook Form so each form has one place for validation rules and error messages. The tests focus mainly on behavior across forms, routing, authentication state, and permissions rather than component snapshots.
+**sessionStorage instead of localStorage.** It survives a refresh but clears when the tab closes,
+which felt like the right default for a mock access portal instead of something that sticks around
+indefinitely. Neither one is what a real product should do though. Production auth should keep
+only an opaque session id in a secure, HttpOnly, SameSite cookie set by the server, not user data
+sitting in something JavaScript can read.
+
+**React Hook Form and Zod instead of writing my own form state.** For three forms I could have
+gotten away with plain useState and manual checks. I used schemas instead so each form has one
+place that defines its rules and its error messages, and that place can be tested on its own.
+React Hook Form handles typing, submission, and loading state, and Zod just tells it what counts
+as valid.
 
 ## Project structure
 
