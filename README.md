@@ -2,6 +2,8 @@
 
 This is a small React authentication demo built for the Alkira UI Developer take-home. It includes login validation, a mock email-code MFA step, a protected dashboard, and read-only and read/write user experiences.
 
+**[Watch the demo recording](https://github.com/jeyjzhang/AlkiraTakehome/releases/download/demo-v1/DEMO.mp4)** — login and MFA, validation and error handling, and both role experiences.
+
 ## Technologies
 
 - React and TypeScript
