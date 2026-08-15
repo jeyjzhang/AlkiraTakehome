@@ -119,10 +119,13 @@ describe('authentication experience', () => {
     await user.type(screen.getByLabelText(/full name/i), 'Jamie Zhang');
     await user.type(screen.getByLabelText(/work email/i), 'jamie@example.com');
     await user.type(screen.getByLabelText(/^password$/i), 'Password1');
-    await user.type(screen.getByLabelText(/confirm password/i), 'Password2');
+    const confirmPassword = screen.getByLabelText(/confirm password/i);
+    await user.type(confirmPassword, 'Password2');
     await user.click(screen.getByRole('button', { name: /create account/i }));
 
     expect(await screen.findByText(/passwords do not match/i)).toBeInTheDocument();
+    expect(confirmPassword).toHaveAttribute('aria-invalid', 'true');
+    expect(confirmPassword).toHaveAccessibleDescription('Passwords do not match.');
     expect(screen.queryByRole('heading', { name: /you're on the list/i })).not.toBeInTheDocument();
   });
 });

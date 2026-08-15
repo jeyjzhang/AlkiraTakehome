@@ -49,19 +49,48 @@ export function SignupPage() {
         noValidate
       >
         <FormField id="name" label="Full name" error={errors.name?.message}>
-          <input id="name" placeholder="Your full name" autoComplete="name" {...register('name')} />
+          <input
+            id="name"
+            placeholder="Your full name"
+            autoComplete="name"
+            aria-invalid={Boolean(errors.name)}
+            aria-describedby={errors.name ? 'name-error' : undefined}
+            {...register('name')}
+          />
         </FormField>
         <FormField id="signup-email" label="Work email" error={errors.email?.message}>
           <div className="input-shell">
             <MailIcon className="input-shell__icon" />
-            <input id="signup-email" type="email" placeholder="name@company.com" autoComplete="email" {...register('email')} />
+            <input
+              id="signup-email"
+              type="email"
+              placeholder="name@company.com"
+              autoComplete="email"
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? 'signup-email-error' : undefined}
+              {...register('email')}
+            />
           </div>
         </FormField>
         <FormField id="signup-password" label="Password" error={errors.password?.message}>
-          <PasswordInput id="signup-password" placeholder="At least 8 characters" autoComplete="new-password" {...register('password')} />
+          <PasswordInput
+            id="signup-password"
+            placeholder="At least 8 characters"
+            autoComplete="new-password"
+            aria-invalid={Boolean(errors.password)}
+            aria-describedby={errors.password ? 'signup-password-error' : undefined}
+            {...register('password')}
+          />
         </FormField>
         <FormField id="confirm-password" label="Confirm password" error={errors.confirmPassword?.message}>
-          <PasswordInput id="confirm-password" placeholder="Repeat your password" autoComplete="new-password" {...register('confirmPassword')} />
+          <PasswordInput
+            id="confirm-password"
+            placeholder="Repeat your password"
+            autoComplete="new-password"
+            aria-invalid={Boolean(errors.confirmPassword)}
+            aria-describedby={errors.confirmPassword ? 'confirm-password-error' : undefined}
+            {...register('confirmPassword')}
+          />
         </FormField>
         <button className="button button--primary button--full" disabled={isSubmitting} type="submit">
           {isSubmitting ? <span className="spinner" aria-label="Creating account" /> : <>

@@ -23,13 +23,15 @@ Start with a fresh tab so `sessionStorage` does not skip the login flow. Keep th
 
 ## Five-minute walkthrough
 
-### 0:00–0:40 — Frame the solution
+### 0:00–0:45 — Start locally and frame the solution
+
+Briefly show the **Run locally** section of the README and the terminal where Vite printed the local URL. Mention that setup is `corepack pnpm install`, followed by `npm run dev`; do not reinstall dependencies during the recording.
 
 > I treated authentication as three explicit states: anonymous, MFA required, and authenticated. The protected screen is available only after both factors succeed. The backend is intentionally mocked because the exercise permits it, but I kept that mock behind a service boundary.
 
 Show the login screen and briefly mention the two demo-role shortcuts.
 
-### 0:40–1:20 — Validation and authentication failure
+### 0:45–1:25 — Validation and authentication failure
 
 1. Submit the empty login form.
 2. Point out field-specific messages and accessible error associations.
@@ -37,7 +39,7 @@ Show the login screen and briefly mention the two demo-role shortcuts.
 
 > Credential errors are deliberately generic so the UI does not reveal whether a given account exists.
 
-### 1:20–2:00 — MFA boundary
+### 1:25–2:05 — MFA boundary
 
 1. Choose the read-only account.
 2. Enter an incorrect six-digit code once.
@@ -45,7 +47,7 @@ Show the login screen and briefly mention the two demo-role shortcuts.
 
 > A successful password does not create an authenticated session. It creates a pending user, and only successful MFA promotes that user into the authenticated state.
 
-### 2:00–2:45 — Read-only authorization
+### 2:05–2:50 — Read-only authorization
 
 1. Show the role badge and read-only explanation.
 2. Show the disabled Edit controls.
@@ -53,7 +55,7 @@ Show the login screen and briefly mention the two demo-role shortcuts.
 
 > I check a named permission rather than comparing role strings throughout the UI. That gives us one place to evolve the role-to-capability mapping.
 
-### 2:45–3:45 — Read/write experience
+### 2:50–3:50 — Read/write experience
 
 1. Sign out and use the read/write account.
 2. Complete MFA and open an Edit dialog.
@@ -64,13 +66,13 @@ If appropriate, demonstrate Escape closing the dialog and focus returning to Edi
 
 > The role changes capability, not just labeling. The dialog traps focus, supports Escape, and restores focus to the control that opened it.
 
-### 3:45–4:30 — Testing and delivery quality
+### 3:50–4:35 — Testing and delivery quality
 
 Show the test names or CI workflow rather than reading source code line by line.
 
-> Component integration tests cover validation, route protection, invalid MFA, and both permission states. One Playwright test covers the critical browser path and runs Axe on the authenticated dashboard. CI executes lint, component tests, build, and browser testing from a clean install.
+> Component integration tests cover validation, route protection, invalid MFA, and both permission states. The Playwright suite covers the critical browser path, keyboard behavior, mobile viewport containment, and an Axe scan of the authenticated dashboard. CI executes lint, component tests, build, and browser testing from a clean install.
 
-### 4:30–5:00 — Boundaries and production changes
+### 4:35–5:00 — Boundaries and production changes
 
 > Client route guards are a UX control, not a production security boundary. With a real backend, credentials and MFA would be verified server-side, the session would use a secure HttpOnly cookie, and every edit operation would be authorized again by the API.
 

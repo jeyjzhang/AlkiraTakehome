@@ -50,7 +50,7 @@ npm run build
 npm run test:e2e
 ```
 
-The component tests cover validation, failed credentials, route protection, MFA, role permissions, session restoration, logout, and sign-up validation. The Playwright test covers the main browser flow, keyboard behavior in the edit dialog, editing a resource, and an Axe accessibility scan.
+The component tests cover validation, failed credentials, route protection, MFA, role permissions, session restoration, logout, and sign-up validation. The Playwright tests cover the main browser flow, keyboard behavior in the edit dialog, editing a resource, an Axe accessibility scan, and mobile viewport containment.
 
 ## Design decisions and trade-offs
 

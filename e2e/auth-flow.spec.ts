@@ -55,3 +55,41 @@ test('completes MFA, enforces accessible dialog behavior, and edits a resource',
   const accessibilityScan = await new AxeBuilder({ page }).analyze();
   expect(accessibilityScan.violations).toEqual([]);
 });
+
+test('keeps the authentication flow and dashboard within a mobile viewport', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/login');
+
+  await expect(
+    page.getByRole('heading', { name: 'Sign in to your account' }),
+  ).toBeVisible();
+  await expect(page.getByLabel('Email address')).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          document.documentElement.scrollWidth <=
+          document.documentElement.clientWidth,
+      ),
+    )
+    .toBe(true);
+
+  await page.getByRole('button', { name: /read\/write account/i }).click();
+  await page.getByRole('button', { name: /continue securely/i }).click();
+  await page.getByLabel('Verification code').fill('123456');
+  await page.getByRole('button', { name: /verify and continue/i }).click();
+
+  await expect(page).toHaveURL(/\/dashboard$/);
+  await expect(page.getByText('Read / write', { exact: true })).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          document.documentElement.scrollWidth <=
+          document.documentElement.clientWidth,
+      ),
+    )
+    .toBe(true);
+});
