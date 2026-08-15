@@ -13,3 +13,7 @@ test-results
 # Supplied assessment brief; keep the submission repository focused on the solution.
 Alkira UI Developer Test.pdf
 .claude/
+
+# Demo recording is attached to a GitHub Release instead of committed (GitHub
+# rejects any single git-pushed file over 100MB).
+DEMO.mp4
