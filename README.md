@@ -125,4 +125,4 @@ Pages depend on `auth`, `validation`, and `components`; those layers do not depe
 
 ## AI usage
 
-I used AI assistance for parts of the initial scaffolding, UI implementation, tests, and documentation. I reviewed the resulting code and used linting, component tests, a production build, and a browser test to verify it. I can explain the submitted flow and the trade-offs above; this remains a frontend demonstration rather than a production authentication system.
+I used Codex and ClaudeCode as my primary implementation tools, and they generated essentially all of the submitted code. Workflow-wise, I prioritized establishing automated checks early and broke the work down into incremental parts rather than asking for the finished application in one pass. Clarifying requirements and deciding trade-offs was something I prioritized so I could follow the implementation, review it critically, and catch mistakes in the generated output or offer improvements.
